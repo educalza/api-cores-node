@@ -1,5 +1,7 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 3000; // Usa a porta do ambiente (Vercel) ou 3000 (Local)
 
 // --- FUNÇÕES DE CONVERSÃO MANUAIS ---
@@ -90,8 +92,8 @@ function hslToRgbManual(h, s, l) {
 // --- FIM DAS FUNÇÕES AUXILIARES ---
 
 // --- Função Auxiliar para Enviar Respostas Padrão ---
-const sendResponse = (res, success, message, data = null) => {
-    return res.json({
+const sendResponse = (res, success, message, data = null, statusCode = 200) => {
+    return res.status(statusCode).json({
         success,
         message,
         data
@@ -100,13 +102,18 @@ const sendResponse = (res, success, message, data = null) => {
 
 // Middleware para validar o código HEX antes de qualquer rota que o utilize
 app.use((req, res, next) => {
-    const hex = req.query.hex;
+    // Sanitização: Pega o primeiro valor se for array (Parameter Pollution Fix)
+    const rawHex = req.query.hex;
+    const hex = Array.isArray(rawHex) ? rawHex[0] : rawHex;
+
+    // Normalização da rota: remove trailing slash e converte para lowercase (Bypass Fix)
+    const normalizedPath = req.path.replace(/\/$/, '').replace(/^\//, '').toLowerCase();
 
     // Métodos que exigem o parâmetro 'hex' (inclui /docs apenas para ignorar a validação na rota)
     const requiresHex = ['hex_para_rgb', 'calcular_complementar', 'gerar_paleta_triadica', 'obter_nome_cor'];
 
-    if (requiresHex.includes(req.path.replace('/', '')) && !hex) {
-        return sendResponse(res, false, 'O parâmetro "hex" é obrigatório (Ex: FF5733).');
+    if (requiresHex.includes(normalizedPath) && !hex) {
+        return sendResponse(res, false, 'O parâmetro "hex" é obrigatório (Ex: FF5733).', null, 400);
     }
 
     if (hex) {
@@ -114,7 +121,7 @@ app.use((req, res, next) => {
 
         // Validação básica se é HEX e tem o comprimento correto
         if (!/^[0-9A-F]{3}$|^[0-9A-F]{6}$/i.test(cleanHex)) {
-            return sendResponse(res, false, 'O parâmetro "hex" deve ser um código de cor HEX válido (3 ou 6 dígitos).');
+            return sendResponse(res, false, 'O parâmetro "hex" deve ser um código de cor HEX válido (3 ou 6 dígitos).', null, 400);
         }
         // Anexa o HEX limpo e capitalizado ao objeto request para uso posterior
         req.cleanHex = cleanHex;
@@ -139,7 +146,7 @@ app.get('/hex_para_rgb', (req, res) => {
         });
     } catch (error) {
         console.error("Erro na rota /hex_para_rgb:", error.message);
-        sendResponse(res, false, 'Erro na conversão HEX para RGB (verifique logs).', null);
+        sendResponse(res, false, 'Erro na conversão HEX para RGB (verifique logs).', null, 500);
     }
 });
 
@@ -161,7 +168,7 @@ app.get('/calcular_complementar', (req, res) => {
         });
     } catch (error) {
         console.error("Erro na rota /calcular_complementar:", error.message);
-        sendResponse(res, false, 'Erro ao calcular a cor complementar.', null);
+        sendResponse(res, false, 'Erro ao calcular a cor complementar.', null, 500);
     }
 });
 
@@ -185,13 +192,13 @@ app.get('/gerar_paleta_triadica', (req, res) => {
         const cor1 = `#${rgbToHexManual(r1, g1, b1)}`;
         const cor2 = `#${rgbToHexManual(r2, g2, b2)}`;
 
-        sendResponse(res, true, 'Paleta Triádica gerada (usando HSL manual).', {
+        sendResponse(res, true, "Paleta Triádica gerada (usando HSL manual).", {
             base_hex: corBase,
             paleta: [corBase, cor1, cor2]
         });
     } catch (error) {
         console.error("Erro na rota /gerar_paleta_triadica:", error.message);
-        sendResponse(res, false, 'Erro ao gerar a paleta triádica.', null);
+        sendResponse(res, false, 'Erro ao gerar a paleta triádica.', null, 500);
     }
 });
 
@@ -213,7 +220,7 @@ app.get('/obter_nome_cor', (req, res) => {
         sendResponse(res, false, 'Nenhum nome descritivo encontrado para este HEX na lista interna.', {
             hex: `#${req.cleanHex}`,
             tip: 'Tente um dos códigos conhecidos: FF0000, 4682B4, FFD700.'
-        });
+        }, 404);
     }
 });
 
@@ -224,7 +231,7 @@ app.get('/obter_nome_cor', (req, res) => {
 app.get('/docs', (req, res) => {
     // URL base deve ser dinâmica para funcionar no Vercel também
     const baseUrl = req.protocol + '://' + req.get('host');
-    
+
     return res.json({
         "mensagem": "API de Análise e Paletas de Cores (Node.js)",
         "descricao": "Esta API fornece utilitários para conversão e manipulação de códigos de cores HEX.",
@@ -271,12 +278,12 @@ app.use((req, res) => {
     if (req.path === '/') {
         return res.redirect('/docs');
     }
-    
+
     const methods = ['hex_para_rgb', 'calcular_complementar', 'gerar_paleta_triadica', 'obter_nome_cor'];
     sendResponse(res, false, 'Método inválido ou não especificado. Consulte /docs para a documentação completa.', {
         available_methods: methods,
         example_usage: `${req.protocol}://${req.get('host')}/hex_para_rgb?hex=1E90FF`
-    });
+    }, 404);
 });
 
 // Inicia o servidor

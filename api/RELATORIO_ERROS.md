@@ -40,4 +40,33 @@ Este documento detalha os problemas encontrados na API após uma bateria de test
 
 ---
 **Data do Relatório**: 25/11/2025
-**Status**: Pendente de Correção
+**Status**: ✅ Corrigido (25/11/2025)
+
+---
+
+## ✅ Correções Implementadas
+
+### 1. Correção de Poluição de Parâmetros
+**Solução**: Implementada sanitização no middleware para detectar se `req.query.hex` é um array. Se for, apenas o primeiro elemento é utilizado.
+```javascript
+const rawHex = req.query.hex;
+const hex = Array.isArray(rawHex) ? rawHex[0] : rawHex;
+```
+
+### 2. Correção de Bypass de Validação (Trailing Slash e Case Sensitivity)
+**Solução**: Normalização do path antes da verificação. O path agora é convertido para minúsculas e barras finais são removidas.
+```javascript
+const normalizedPath = req.path.replace(/\/$/, '').replace(/^\//, '').toLowerCase();
+```
+
+### 3. Implementação de CORS
+**Solução**: Instalação e configuração do pacote `cors` para permitir requisições de outras origens.
+```javascript
+const cors = require('cors');
+app.use(cors());
+```
+
+### 4. Limpeza de Código
+**Solução**: 
+- Remoção da dependência não utilizada `color-convert`.
+- Melhoria no tratamento de erros para retornar status HTTP corretos (400, 404, 500).
