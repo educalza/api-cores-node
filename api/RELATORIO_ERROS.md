@@ -29,7 +29,7 @@ Este documento detalha os problemas encontrados na API após uma bateria de test
 **Impacto**: Aplicações web (Front-end) hospedadas em domínios diferentes não conseguirão consumir esta API diretamente via navegador.
 
 ### 5. Dependência Não Utilizada
-**Descrição**: O pacote `color-convert` está instalado (`package.json`) mas não é utilizado no código.
+**Descrição**: O pacote `color-convert` está instalado (`package.json`) mas não é utilizado no código. No momento que foi inicializado o projeto, foi instalado para utilzar como o pacote principal da aplicação. Infelizmente estava com problemas de compatibilidade e não foi possível utilizá-lo.
 **Recomendação**: Remover para reduzir o tamanho do projeto e superfície de ataque.
 
 ## 📝 Sugestões de Melhoria no Código
