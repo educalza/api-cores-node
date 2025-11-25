@@ -6,7 +6,7 @@ A API está publicada em produção na plataforma **Vercel** e pode ser testada 
 
 ## 🔗 Link de Produção
 
-  * **URL Base da API:** `https://api-cores-node.vercel.app`
+  * **URL Base da API:** `https://api-cores-node-bu6d.onrender.com/docs`
 
 ## 📚 Documentação da API
 
