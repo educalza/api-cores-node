@@ -80,6 +80,7 @@ Para visualizar a documentação completa da API em formato JSON (igual aos exem
     "rgb_array": [30, 144, 255]
   }
 }
+```
 
 -----
 
