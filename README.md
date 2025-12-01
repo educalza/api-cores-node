@@ -28,7 +28,7 @@ Para visualizar a documentação completa da API em formato JSON (igual aos exem
 | :--- | :--- |
 | **Método** | `GET` |
 | **Parâmetro** | `hex` (código HEX de 3 ou 6 dígitos) |
-| **Exemplo de URL** | `https://api-cores-node.vercel.app/hex_para_rgb?hex=1E90FF` |
+| **Exemplo de URL** | `https://api-cores-node-bu6d.onrender.com/hex_para_rgb?hex=1E90FF` |
 | **Descrição** | Converte o código HEX fornecido para o formato RGB. |
 
 **Exemplo de Resposta:**
@@ -53,7 +53,7 @@ Para visualizar a documentação completa da API em formato JSON (igual aos exem
 | :--- | :--- |
 | **Método** | `GET` |
 | **Parâmetro** | `hex` (código HEX de 3 ou 6 dígitos) |
-| **Exemplo de URL** | `https://api-cores-node.vercel.app/calcular_complementar?hex=FF0000` |
+| **Exemplo de URL** | `https://api-cores-node-bu6d.onrender.com/calcular_complementar?hex=FF0000` |
 | **Descrição** | Calcula a cor complementar (inversa) de um código HEX. |
 
 **Exemplo de Resposta:**
@@ -78,7 +78,7 @@ Para visualizar a documentação completa da API em formato JSON (igual aos exem
 | :--- | :--- |
 | **Método** | `GET` |
 | **Parâmetro** | `hex` (código HEX de 3 ou 6 dígitos) |
-| **Exemplo de URL** | `https://api-cores-node.vercel.app/gerar_paleta_triadica?hex=00FF00` |
+| **Exemplo de URL** | `https://api-cores-node-bu6d.onrender.com/gerar_paleta_triadica?hex=00FF00` |
 | **Descrição** | Gera uma paleta de 3 cores (triádica) baseada no código HEX fornecido. |
 
 **Exemplo de Resposta:**
@@ -106,7 +106,7 @@ Para visualizar a documentação completa da API em formato JSON (igual aos exem
 | :--- | :--- |
 | **Método** | `GET` |
 | **Parâmetro** | `hex` (código HEX de 3 ou 6 dígitos) |
-| **Exemplo de URL** | `https://api-cores-node.vercel.app/obter_nome_cor?hex=4682B4` |
+| **Exemplo de URL** | `https://api-cores-node-bu6d.onrender.com/obter_nome_cor?hex=4682B4` |
 | **Descrição** | Busca um nome descritivo para o código HEX fornecido em uma lista interna. |
 
 **Exemplo de Resposta:**
